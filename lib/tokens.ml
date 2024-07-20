@@ -1,4 +1,4 @@
-type token_kind = 
+type token_kind =
   | Left_Paren
   | Right_Paren
   | Left_Brace
@@ -39,8 +39,6 @@ type token_kind =
   | While
   | EOF
 
-type literal = 
-  | String of string | Float of float | Int of int | Bool of bool
+type literal = String_Literal of string | Float of float | Int of int | Bool of bool
 
-type token = { kind : token_kind; lexeme : string; literal : literal}
-
+type token = {kind: token_kind; lexeme: string; literal: literal}

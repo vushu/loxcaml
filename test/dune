@@ -1,2 +1,4 @@
 (test
- (name loxcaml))
+ (name loxcaml)
+ ;(modules loxcaml)
+ (libraries loxcaml))
