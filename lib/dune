@@ -1,2 +1,3 @@
 (library
- (name loxcaml))
+ (name loxcaml)
+ (modules_without_implementation tokens scanner_state))

@@ -39,6 +39,6 @@ type token_kind =
   | While
   | EOF
 
-type literal = String_Literal of string | Float of float | Int of int | Bool of bool
+type literal = String_Literal of string | Float_Literal of float | Int_Literal of int | Bool_Literal of bool
 
 type token = {kind: token_kind; lexeme: string; literal: literal}
