@@ -10,7 +10,6 @@ let add_token state tk lexeme lit =
   {start; source; tokens= new_tokens; current; line}
 
 let add_token state tk =
-
   let lex = String.sub state.source state.start (state.current - state.start) in
   add_token state tk lex (String_Literal lex)
 
@@ -78,6 +77,32 @@ let rec scan_token_loop state =
       scan_token {start = current; source; tokens; current; line }
       |> scan_token_loop
     else state
+
+let create_token kind lexeme = 
+  {kind; lexeme; literal = String_Literal(lexeme)}
+let rec scan_token2 code = 
+  let rescan_token = fun kind lexeme tail -> List.append [create_token kind lexeme] (scan_token2 tail) in
+  match code with
+    | [] -> []
+    | '(' :: tail -> rescan_token Left_Paren "(" tail
+    | ')' :: tail -> rescan_token Right_Paren ")" tail
+    | '{' :: tail -> rescan_token Left_Brace "{" tail
+    | '}' :: tail -> rescan_token Right_Brace "}" tail
+    | ',' :: tail -> rescan_token Comma "," tail
+    | '.' :: tail -> rescan_token Dot "." tail
+    | '-' :: tail -> rescan_token Minus "-" tail
+    | '+' :: tail -> rescan_token Plus "+" tail
+    | '*' :: tail -> rescan_token Star "*" tail
+    | '!' :: '=' :: tail -> rescan_token Bang_Equal "!=" tail
+    | '!' :: tail -> rescan_token Bang "!" tail
+    | '=' :: '=' :: tail -> rescan_token Equal_Equal "==" tail
+    | '=' :: tail -> rescan_token Equal "=" tail
+    | '<' :: '=' :: tail -> rescan_token Less_Equal "<=" tail
+    | '<' :: tail -> rescan_token Less "<" tail
+    | '>' :: '=' :: tail -> rescan_token Greater_Equal ">=" tail
+    | '>' :: tail -> rescan_token Greater ">" tail
+    | _ -> []
+
 
 let scan_tokens code : token list = 
   let initial_state  = { start = 0; source = code; tokens = []; current = 0 ; line = 0 } in
