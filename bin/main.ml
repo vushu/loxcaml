@@ -1,4 +1,4 @@
 open Loxcaml
 open Scanner
-let () = say_hi
+(* let () = say_hi *)
 

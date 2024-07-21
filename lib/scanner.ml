@@ -1,5 +1,8 @@
 open Scanner_state
 open Tokens
+let () = Printexc.record_backtrace true
+
+let get_ch state = String.get state.source state.current
 let add_token state tk lexeme lit =
   let {start; source; tokens; current; line} = state in
   let new_token = {kind= tk; lexeme; literal= lit} in
@@ -7,16 +10,16 @@ let add_token state tk lexeme lit =
   {start; source; tokens= new_tokens; current; line}
 
 let add_token state tk =
-  let lex = String.sub state.source state.start state.current in
+
+  let lex = String.sub state.source state.start (state.current - state.start) in
   add_token state tk lex (String_Literal lex)
 
 let advance {start; source; tokens; current; line} = 
-  let inc = current + 1 in
-  {start; source; tokens; current = inc; line;}
+  {start; source; tokens; current = current + 1; line;}
 let increment_line {start; source; tokens; current; line} = 
   {start; source; tokens; current;  line = line + 1;}
 
-let is_at_end state = state.current > String.length state.source
+let is_at_end state = state.current >= (String.length state.source)
 
 let matches state c = 
   if is_at_end state then None
@@ -31,8 +34,8 @@ let rec skipping_loop state =
   else state
 
  let scan_token state  = 
+  let c = get_ch state in
   let s = advance state in
-  let c = String.get s.source s.current in
   match c with
     | '(' ->  add_token s Left_Paren
     | ')' ->  add_token s Right_Paren
@@ -69,8 +72,6 @@ let rec skipping_loop state =
     | '"' -> state
     | _ -> state
 
-
-let say_hi = print_endline "saying hi"
 let rec scan_token_loop state = 
     if not (is_at_end state) then 
       let {start = _; source; tokens; current; line} = state in
@@ -79,6 +80,6 @@ let rec scan_token_loop state =
     else state
 
 let scan_tokens code : token list = 
-  let state : scanner_state = { start = 0; source = code; tokens = []; current = 0 ; line = 0 } in
-  let new_state = scan_token_loop state in
+  let initial_state  = { start = 0; source = code; tokens = []; current = 0 ; line = 0 } in
+  let new_state = scan_token_loop initial_state in
   new_state.tokens

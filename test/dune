@@ -1,4 +1,4 @@
 (test
- (name loxcaml)
+ (name loxcaml_test)
  ;(modules loxcaml)
  (libraries loxcaml))
